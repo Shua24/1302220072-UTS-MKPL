@@ -92,16 +92,16 @@ public class Employee {
 			? now.getMonthValue() - joinDate.getMonthValue()
 			: 12;
 
-		boolean hasSpouse = this.spouse != null;
-		int numberOfChildren = this.children.size();
-
-		return TaxFunction.calculateTax(
-			monthlyIncome.baseSalary(),
-			monthlyIncome.otherIncome(),
+		TaxProfile profile = new TaxProfile(
+			monthlyIncome,
 			monthsWorkedThisYear,
 			annualDeductible,
-			!hasSpouse,
-			numberOfChildren
+			this.spouse != null,
+			this.children.size()
 		);
+
+		TaxRules rules = TaxRules.defaultRules();
+
+	return TaxFunction.calculateTax(profile, rules);
 	}
 }
