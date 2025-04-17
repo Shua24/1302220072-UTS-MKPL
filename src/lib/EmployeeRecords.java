@@ -1,15 +1,17 @@
-public record EmployeeId(String value) {}
-public record Name(String firstName, String lastName) {}
-public record PersonalId(String value) {}
-public record Address(String value) {}
-public record Spouse(String name, PersonalId idNumber) {}
-public record Child(String name, PersonalId idNumber) {}
-public record MonthlyIncome(int baseSalary, int otherIncome) {}
+package lib;
 
-public enum Gender { MALE, FEMALE }
+record EmployeeId(String value) {}
+record Name(String firstName, String lastName) {}
+record PersonalId(String value) {}
+record Address(String value) {}
+record Spouse(String name, PersonalId idNumber) {}
+record Child(String name, PersonalId idNumber) {}
+record MonthlyIncome(int baseSalary, int otherIncome) {}
+
+enum Gender { MALE, FEMALE }
 
 // Nilai-nilai profil pajak
-public record TaxProfile(
+record TaxProfile(
     MonthlyIncome income,
     int monthsWorked,
     int deductible,
@@ -18,7 +20,7 @@ public record TaxProfile(
 ) {}
 
 // Batas pajak
-public record TaxRules(
+record TaxRules(
 	int basicDeduction,
 	int marriageDeduction,
 	int childDeduction,
