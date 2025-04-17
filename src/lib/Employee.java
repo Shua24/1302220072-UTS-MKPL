@@ -1,50 +1,34 @@
 package lib;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Employee {
 
-	private String employeeId;
-	private String firstName;
-	private String lastName;
-	private String idNumber;
-	private String address;
-	
-	private int yearJoined;
-	private int monthJoined;
-	private int dayJoined;
-	private int monthWorkingInYear;
-	
+	private EmployeeId employeeId;
+	private Name name;
+	private PersonalId personalId;
+	private Address address;
+	private LocalDate joinDate;
 	private boolean isForeigner;
-	private boolean gender; //true = Laki-laki, false = Perempuan
-	
-	private int monthlySalary;
-	private int otherMonthlyIncome;
-	private int annualDeductible;
-	
-	private String spouseName;
-	private String spouseIdNumber;
+	private Gender gender;
 
-	private List<String> childNames;
-	private List<String> childIdNumbers;
-	
-	public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, int yearJoined, int monthJoined, int dayJoined, boolean isForeigner, boolean gender) {
+	private MonthlyIncome monthlyIncome;
+	private int annualDeductible;
+
+	private Spouse spouse;
+	private List<Child> children = new ArrayList<>();
+
+	public Employee(EmployeeId employeeId, Name name, PersonalId personalId, Address address,
+	                LocalDate joinDate, boolean isForeigner, Gender gender) {
 		this.employeeId = employeeId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.idNumber = idNumber;
+		this.name = name;
+		this.personalId = personalId;
 		this.address = address;
-		this.yearJoined = yearJoined;
-		this.monthJoined = monthJoined;
-		this.dayJoined = dayJoined;
+		this.joinDate = joinDate;
 		this.isForeigner = isForeigner;
 		this.gender = gender;
-		
-		childNames = new LinkedList<String>();
-		childIdNumbers = new LinkedList<String>();
 	}
 	
 	/**
