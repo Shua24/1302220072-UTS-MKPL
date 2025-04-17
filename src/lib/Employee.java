@@ -35,55 +35,73 @@ public class Employee {
 	 * Fungsi untuk menentukan gaji bulanan pegawai berdasarkan grade kepegawaiannya (grade 1: 3.000.000 per bulan, grade 2: 5.000.000 per bulan, grade 3: 7.000.000 per bulan)
 	 * Jika pegawai adalah warga negara asing gaji bulanan diperbesar sebanyak 50%
 	 */
-	
-	public void setMonthlySalary(int grade) {	
-		if (grade == 1) {
-			monthlySalary = 3000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
-		}else if (grade == 2) {
-			monthlySalary = 5000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
-		}else if (grade == 3) {
-			monthlySalary = 7000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
+
+	public void setMonthlySalary(int grade) {
+		int base;
+
+		switch (grade) {
+			case 1 -> base = 3000000;
+			case 2 -> base = 5000000;
+			case 3 -> base = 7000000;
+			default -> throw new IllegalArgumentException("Angka Grade tidak valid");
 		}
+
+		if (isForeigner) {
+			base *= 1.5;
+		}
+
+		this.monthlyIncome = new MonthlyIncome((int) base, this.monthlyIncome.otherIncome());
 	}
-	
+
+
 	public void setAnnualDeductible(int deductible) {	
 		this.annualDeductible = deductible;
 	}
 	
-	public void setAdditionalIncome(int income) {	
-		this.otherMonthlyIncome = income;
+	public void setAdditionalIncome(int income) {
+		this.monthlyIncome = new MonthlyIncome(this.monthlyIncome.baseSalary(), income);
 	}
+
 	
 	public void setSpouse(String spouseName, String spouseIdNumber) {
-		this.spouseName = spouseName;
-		this.spouseIdNumber = idNumber;
+		this.spouse = new Spouse(spouseName, new PersonalId(spouseIdNumber));
 	}
+
 	
 	public void addChild(String childName, String childIdNumber) {
-		childNames.add(childName);
-		childIdNumbers.add(childIdNumber);
+		this.children.add(new Child(childName, new PersonalId(childIdNumber)));
 	}
-	
+
+	public Spouse getSpouse() {
+		return this.spouse;
+	}
+
+	public List<Child> getChildren() {
+		return List.copyOf(this.children); // optional: make it unmodifiable
+	}
+
+
+	/* Menghitung berapa lama pegawai bekerja dalam setahun ini, 
+	 * jika pegawai sudah bekerja dari tahun sebelumnya 
+	 * maka otomatis dianggap 12 bulan. */
+
 	public int getAnnualIncomeTax() {
-		
-		//Menghitung berapa lama pegawai bekerja dalam setahun ini, jika pegawai sudah bekerja dari tahun sebelumnya maka otomatis dianggap 12 bulan.
-		LocalDate date = LocalDate.now();
-		
-		if (date.getYear() == yearJoined) {
-			monthWorkingInYear = date.getMonthValue() - monthJoined;
-		}else {
-			monthWorkingInYear = 12;
-		}
-		
-		return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+		LocalDate now = LocalDate.now();
+
+		int monthsWorkedThisYear = (now.getYear() == joinDate.getYear())
+			? now.getMonthValue() - joinDate.getMonthValue()
+			: 12;
+
+		boolean hasSpouse = this.spouse != null;
+		int numberOfChildren = this.children.size();
+
+		return TaxFunction.calculateTax(
+			monthlyIncome.baseSalary(),
+			monthlyIncome.otherIncome(),
+			monthsWorkedThisYear,
+			annualDeductible,
+			!hasSpouse,
+			numberOfChildren
+		);
 	}
 }
